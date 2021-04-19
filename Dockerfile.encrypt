@@ -10,3 +10,4 @@ COPY ./encrypt.py /
 #RUN python -m pip install -r /requirements.txt
 #change this and use a bash script to run - NOT WORKING !!
 ENTRYPOINT [ "/encrypt_entrypoint.sh" ]
+

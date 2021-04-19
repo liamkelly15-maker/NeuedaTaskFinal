@@ -25,6 +25,7 @@ services:
     volumes:
       - type: bind
         source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+
         target: /data
       - type: volume
         source: datavolume
