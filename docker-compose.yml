@@ -1,0 +1,39 @@
+version: '3'
+
+#i was trying to use the named volume but could not locate the docker volume mount to check the results
+# therefore did not use the volume /outputdata
+services:
+  encrypt:
+    build:
+      context: .
+      dockerfile: Dockerfile.encrypt
+    volumes:
+      - type: bind
+        #try to get this working on the current directory of any platform
+        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+        target: /data
+      - type: volume
+        source: datavolume
+        target: /outputdata
+
+  decrypt:
+    build:
+      context: .
+      dockerfile: Dockerfile.decrypt
+    depends_on:
+      - "encrypt"
+    volumes:
+      - type: bind
+        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+        target: /data
+      - type: volume
+        source: datavolume
+        target: /outputdata
+
+#put the named volumes here - this can be shared between containers
+#the named volumes are used for sharing generated data-docker decides where the volume is mounted
+#the bind volume is used for passing in data-programmer decides where the volume is mounted
+
+volumes:
+  datavolume: {}
+
