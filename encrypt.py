@@ -15,18 +15,18 @@ data = json.load(f)
 data2= json.dumps(data)
 data3 = readfromstring(data2)
 #convert the string to xml and write to file on namedvolume /outputdata
-with open("./data/json_to_xml.xml", "w") as f:
+with open("./outputdata/json_to_xml.xml", "w") as f:
     f.write(json2xml.Json2xml(data3).to_xml())
 
 def write_key():
     """Generates a key and save it into a file on named volume /outputdata"""
     key = Fernet.generate_key()
-    with open("./data/key.key", "wb") as key_file:
+    with open("./outputdata/key.key", "wb") as key_file:
         key_file.write(key)
 
 def load_key():
     """Loads the key from the named volume /outputdata named `key.key`"""
-    return open("./data/key.key", "rb").read()
+    return open("./outputdata/key.key", "rb").read()
 
 def encrypt(filename, key):
     """Given a filename (str or xml) and key (bytes), it encrypts the file and write it"""
@@ -48,7 +48,7 @@ key = load_key()
 #check the key
 #print(key)
 # file name
-file = "./data/json_to_xml.xml"
+file = "./outputdata/json_to_xml.xml"
 # encrypt it
 encrypt(file, key)
 

@@ -1,40 +1,46 @@
-version: '3'
+version: '3.2'
 
+#for some reason decrypt is not working with compose - it runs fine in docker build and docker run
 #i was trying to use the named volume but could not locate the docker volume mount to check the results
 # therefore did not use the volume /outputdata
+
 services:
   encrypt:
     build:
       context: .
       dockerfile: Dockerfile.encrypt
+    ##dont put a tag and it always builds latest i.e. docker compose build will create a new image with latest tag
+    image: encrypt
     volumes:
+      #use a bind volume for inputdata
       - type: bind
-        #try to get this working on the current directory of any platform
+        # can this be passed as a paramater to docker-compose ? data=C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
         source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
         target: /data
-      - type: volume
-        source: datavolume
+      #use a bind volume for outputdata
+      - type: bind
+        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
 
   decrypt:
     build:
       context: .
       dockerfile: Dockerfile.decrypt
+    #dont put a tag and it builds latest
+    image: decrypt
+     #i think depends_on is no longer valid in Version 3.0 docker compose
+     #the depends_on is working good now with 3.2
     depends_on:
       - "encrypt"
     volumes:
+      #use the same bind volume as used by the encrypt service
       - type: bind
-        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
-
-        target: /data
-      - type: volume
-        source: datavolume
+        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
 
 #put the named volumes here - this can be shared between containers
 #the named volumes are used for sharing generated data-docker decides where the volume is mounted
 #the bind volume is used for passing in data-programmer decides where the volume is mounted
 
-volumes:
-  datavolume: {}
-
+#volumes:
+#  outputdatavolume: {}

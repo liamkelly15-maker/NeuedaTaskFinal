@@ -1,14 +1,15 @@
 FROM python:3
-#WORKDIR /code
+#WORKDIR
 #instead of requirements file nstall directly but requirements works also
 RUN pip install cryptography
 RUN pip install json2xml
-#do not copy anything in - let the volume (inside container) mounted (mapped to a host dir) provide the required files
+#do not copy anything in - let the volume (mounted inside container as /data and mounted outside to a host dir) provide the required files
+#volume can be named type or bind type - bind specifies the mount in host - names lets docker decide mount
 #COPY ./requirements.txt /
 COPY ./encrypt_entrypoint.sh /
-RUN chmod +x /encrypt_entrypoint.sh
+RUN chmod a+x /encrypt_entrypoint.sh
 COPY ./encrypt.py /
 #RUN python -m pip install -r /requirements.txt
-#change this and use a bash script to run - NOT WORKING !!
+#change this and use a bash script to run
 ENTRYPOINT /encrypt_entrypoint.sh
 

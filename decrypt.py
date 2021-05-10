@@ -9,7 +9,7 @@ from cryptography.fernet import Fernet
 
 def load_key():
     """Loads the key from the current directory named `key.key`"""
-    return open("./data/key.key", "rb").read()
+    return open("./outputdata/key.key", "rb").read()
 
 def decrypt(filename, key):
     """Given a filename (str or xml) and key (bytes), it decrypts the file and write it"""
@@ -28,7 +28,7 @@ key = load_key()
 #check the key
 #print(key)
 # file name
-file = "./data/json_to_xml.xml"
+file = "./outputdata/json_to_xml.xml"
 # decrypt the file
 decrypt(file, key)
 
