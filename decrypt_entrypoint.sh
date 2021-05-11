@@ -20,9 +20,15 @@ do
 
       echo "start decryption"
       #how do i get this to listen for an xml file before running the service
+      while ! [ -f /outputdata/json_to_xml.xml ]
+      do
+        echo "Waiting for an encrypted xml"
+        sleep 10
+      done
       python /decrypt.py
 
       #next process will write over json_to_xml.xml so save file use a counter to rename the final xml -
+      #so there is no json_to_xml.xml in the directory
       cp /outputdata/json_to_xml.xml /outputdata/'json_to_xml'$count'.xml'
       #now remove the original xml file
       rm -rf /outputdata/json_to_xml.xml

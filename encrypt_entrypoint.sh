@@ -20,7 +20,11 @@
 while :
 do
       echo "starting encrypt"
-      #how do i get this to listen for an json file before running the service
+      while ! [ -f /data/json_file.json ]
+      do
+        echo "Add a JSON file to encrypt"
+        sleep 10
+      done
       python /encrypt.py
 
       echo "encrypt complete - remove the json file\n"

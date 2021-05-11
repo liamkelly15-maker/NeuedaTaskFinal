@@ -1,5 +1,9 @@
 version: '3.2'
-
+#Kompose will generate the required yaml files from this compose file - play with setup of valumes to see
+#the difference in the yaml files generated
+#windows is not using alias like in linux but use an env variable-call the variable like this %variable%
+#the Kompose exe is run by typing kompose-windows-amd64 at CLI-i used variable set kompose=kompose-windows-amd64
+#then at CLI type %kompose% convert -f ../docker-compose.yml
 #for some reason decrypt is not working with compose - it runs fine in docker build and docker run
 #i was trying to use the named volume but could not locate the docker volume mount to check the results
 # therefore did not use the volume /outputdata
