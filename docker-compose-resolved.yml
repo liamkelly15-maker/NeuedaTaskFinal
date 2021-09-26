@@ -1,0 +1,33 @@
+services:
+  decrypt:
+    build:
+      context: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal
+      dockerfile: Dockerfile.decrypt
+    depends_on:
+      encrypt:
+        condition: service_started
+    image: decrypt:latest
+    volumes:
+    - source: outputdatavolume
+      target: /outputdata
+      type: volume
+  encrypt:
+    build:
+      context: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal
+      dockerfile: Dockerfile.encrypt
+    environment:
+      testvar3: any
+      testvar4: anyagain
+      testvar5: morevar!
+    image: encrypt:latest
+    volumes:
+    - source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+      target: /data
+      type: bind
+    - source: outputdatavolume
+      target: /outputdata
+      type: volume
+version: '3.2'
+volumes:
+  outputdatavolume: {}
+

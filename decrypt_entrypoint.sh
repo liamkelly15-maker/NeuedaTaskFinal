@@ -19,7 +19,7 @@ do
 
 
       echo "start decryption"
-      #how do i get this to listen for an xml file before running the service
+      #listen for an xml file before running the service
       while ! [ -f /outputdata/json_to_xml.xml ]
       do
         echo "Waiting for an encrypted xml"

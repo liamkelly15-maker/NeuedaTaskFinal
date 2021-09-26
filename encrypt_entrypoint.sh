@@ -20,6 +20,7 @@
 while :
 do
       echo "starting encrypt"
+      #listen for a json file before starting service
       while ! [ -f /data/json_file.json ]
       do
         echo "Add a JSON file to encrypt"
@@ -33,7 +34,7 @@ do
 
       echo "looping encryption"
       sleep 30
-      #could look for a json file and loop on sleep while no json is available-if json exists in /adata then exit loop else stay in loop
+
 
 done
 #fi

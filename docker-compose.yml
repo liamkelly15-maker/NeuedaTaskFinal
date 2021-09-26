@@ -1,8 +1,20 @@
+#NB NB - use docker compose config to see template - this is like helm template
+
+#think of this as your system deployment (kompose has generated the yaml based on this0
+#it will generate the encrypt container  and the decrypt container (with dependency on encrypt)
+#and the shared volume object called outputdata
+#in k8s containers become pods
+#a volume object is like a disk space alloacted by docker (or K8s) and when mounted it means that you
+#state where it is mapped to in the image the volumemount is described with the container and volume on same level as
+#container (i dont know why the ecrypt-deployment.yml has no volumemount for volume output data
+#or has no bind volume in it
 version: '3.2'
+#env variables for the docker compose  will be defined in the.env file
+#env variables for the container (running image) will be in env_file
 #Kompose will generate the required yaml files from this compose file - play with setup of valumes to see
 #the difference in the yaml files generated
 #windows is not using alias like in linux but use an env variable-call the variable like this %variable%
-#the Kompose exe is run by typing kompose-windows-amd64 at CLI-i used variable set kompose=kompose-windows-amd64
+#the Kompose exe is run by typing %kompose% (kompose-windows-amd64) at CLI-i used variable set kompose=kompose-windows-amd64
 #then at CLI type %kompose% convert -f ../docker-compose.yml
 #for some reason decrypt is not working with compose - it runs fine in docker build and docker run
 #i was trying to use the named volume but could not locate the docker volume mount to check the results
@@ -14,16 +26,40 @@ services:
       context: .
       dockerfile: Dockerfile.encrypt
     ##dont put a tag and it always builds latest i.e. docker compose build will create a new image with latest tag
-    image: encrypt
+    image: encrypt:${TAG}
+    #try to create an envvironment variable needed by the container (i.e. the running image..maybe add something in the
+    #shell script - add using the env_file and  the environment
+    #MAKE THE NAME OF THE JSON AN ENV VARIABLE !!
+    #not generating a gonfigmap.yaml from this env_file - don't know why
+    env_file:
+    - env_file
+    #environment:
+    #- testvar:any2
+#containers can share data via volumes
+#the named volumes are used for sharing generated data-docker decides where the volume is mounted i.e where the actual storage location
+#on the computer is - the location in the image can be specified in the compose so then docker will map or mount the
+#image directory to the same directory on computer the outputdata from encrypt app
+#must goto a shared volume - this concept is called a PVC in k8s or persistent volume claim - if outputdata is a pvc then the images can be s
+#stopped and restarted and the contents of the directory (on computer) for the volume outputdata will still exist
+#the bind volume is used for passing in data-programmer decides where the volume is mounted
+#bind volumes are not common in k8s - you normally pass in files using a configmap
     volumes:
       #use a bind volume for inputdata
       - type: bind
-        # can this be passed as a paramater to docker-compose ? data=C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+        #THIS IS build time var - i have to rebuild to get a new value in here
+        #source: ${inputdata}
+        # YOU CAN READ THIE FILE LOCATION FROM A VALUES.YML AND
+        # WHEM MAKING THE DEPLOYMENT YOU CAN PASS IN THE VAR USING --SET VALUES.FILELOCATION=XXXX
+        #THe key point is that the yaml cannot have variables in it when generated
+        # it should be possible to pass in a paramater to Kompose which will generate the yaml
+        #paramater such as  kompose .... --set inputdata=C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
         source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
         target: /data
       #use a bind volume for outputdata
-      - type: bind
-        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
+      - type: volume
+        source: outputdatavolume
+        # docker will assign d location for mounting volume outside container - i can just specify the mount path inside
+        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
 
   decrypt:
@@ -31,20 +67,21 @@ services:
       context: .
       dockerfile: Dockerfile.decrypt
     #dont put a tag and it builds latest
-    image: decrypt
+    image: decrypt:${TAG}
      #i think depends_on is no longer valid in Version 3.0 docker compose
      #the depends_on is working good now with 3.2
     depends_on:
-      - "encrypt"
+      - 'encrypt'
     volumes:
       #use the same bind volume as used by the encrypt service
-      - type: bind
-        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
+      - type: volume
+        source: outputdatavolume
+        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
 
 #put the named volumes here - this can be shared between containers
 #the named volumes are used for sharing generated data-docker decides where the volume is mounted
 #the bind volume is used for passing in data-programmer decides where the volume is mounted
 
-#volumes:
-#  outputdatavolume: {}
+volumes:
+  outputdatavolume: {}

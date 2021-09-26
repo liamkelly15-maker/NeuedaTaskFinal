@@ -1,0 +1,7 @@
+# the env_file seems to be shell env vars for the container - these are not getting plugged in at build
+#the build vars seem to be .env file
+#inputdata=C:\Users\Neued\data
+jsonfilename=json_file.json
+testvar3=any
+testvar4=anyagain
+testvar5=morevar!
