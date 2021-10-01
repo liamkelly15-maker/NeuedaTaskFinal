@@ -25,7 +25,28 @@ spec:
         io.kompose.service: decrypt
     spec:
       containers:
-      - image: 'decrypt:'
+      - env:
+        - name: jsonfilename
+          valueFrom:
+            configMapKeyRef:
+              key: jsonfilename
+              name: env-file
+        - name: testvar3
+          valueFrom:
+            configMapKeyRef:
+              key: testvar3
+              name: env-file
+        - name: testvar4
+          valueFrom:
+            configMapKeyRef:
+              key: testvar4
+              name: env-file
+        - name: testvar5
+          valueFrom:
+            configMapKeyRef:
+              key: testvar5
+              name: env-file
+        image: 'decrypt:latest'
         imagePullPolicy: ""
         name: decrypt
         resources: {}

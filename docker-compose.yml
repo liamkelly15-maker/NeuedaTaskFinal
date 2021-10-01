@@ -4,13 +4,15 @@
 #it will generate the encrypt container  and the decrypt container (with dependency on encrypt)
 #and the shared volume object called outputdata
 #in k8s containers become pods
-#a volume object is like a disk space alloacted by docker (or K8s) and when mounted it means that you
-#state where it is mapped to in the image the volumemount is described with the container and volume on same level as
+#a volume object is like a disk space alloacted by docker (or K8s) i.e. Docker (or K8s) mount it in the file system
+# the user can mount the volume in the container file system by specifiying a volumemount name and path
+#and when mounted the two directories are linked
+#the volumemount is described inside the container level and volume on same level as
 #container (i dont know why the ecrypt-deployment.yml has no volumemount for volume output data
-#or has no bind volume in it
+#or has no bind volume in it)
 version: '3.2'
 #env variables for the docker compose  will be defined in the.env file
-#env variables for the container (running image) will be in env_file
+#env variables for the container (running image) will be in env-file
 #Kompose will generate the required yaml files from this compose file - play with setup of valumes to see
 #the difference in the yaml files generated
 #windows is not using alias like in linux but use an env variable-call the variable like this %variable%
@@ -28,11 +30,11 @@ services:
     ##dont put a tag and it always builds latest i.e. docker compose build will create a new image with latest tag
     image: encrypt:${TAG}
     #try to create an envvironment variable needed by the container (i.e. the running image..maybe add something in the
-    #shell script - add using the env_file and  the environment
+    #shell script - add using the env-file and  the environment
     #MAKE THE NAME OF THE JSON AN ENV VARIABLE !!
-    #not generating a gonfigmap.yaml from this env_file - don't know why
+    #not generating a gonfigmap.yaml from this env-file - don't know why
     env_file:
-    - env_file
+    - env-file
     #environment:
     #- testvar:any2
 #containers can share data via volumes
@@ -43,9 +45,10 @@ services:
 #stopped and restarted and the contents of the directory (on computer) for the volume outputdata will still exist
 #the bind volume is used for passing in data-programmer decides where the volume is mounted
 #bind volumes are not common in k8s - you normally pass in files using a configmap
+
     volumes:
       #use a bind volume for inputdata
-      - type: bind
+      #- type: bind
         #THIS IS build time var - i have to rebuild to get a new value in here
         #source: ${inputdata}
         # YOU CAN READ THIE FILE LOCATION FROM A VALUES.YML AND
@@ -53,14 +56,16 @@ services:
         #THe key point is that the yaml cannot have variables in it when generated
         # it should be possible to pass in a paramater to Kompose which will generate the yaml
         #paramater such as  kompose .... --set inputdata=C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
-        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
-        target: /data
+        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+        #target: /data
       #use a bind volume for outputdata
       - type: volume
         source: outputdatavolume
         # docker will assign d location for mounting volume outside container - i can just specify the mount path inside
         #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
+      - type: volume
+          - ./data:/data
 
   decrypt:
     build:
@@ -72,6 +77,8 @@ services:
      #the depends_on is working good now with 3.2
     depends_on:
       - 'encrypt'
+    env_file:
+      - env-file
     volumes:
       #use the same bind volume as used by the encrypt service
       - type: volume
@@ -85,3 +92,5 @@ services:
 
 volumes:
   outputdatavolume: {}
+
+

@@ -29,23 +29,23 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: jsonfilename
-              name: env_file
+              name: env-file
         - name: testvar3
           valueFrom:
             configMapKeyRef:
               key: testvar3
-              name: env_file
+              name: env-file
         - name: testvar4
           valueFrom:
             configMapKeyRef:
               key: testvar4
-              name: env_file
+              name: env-file
         - name: testvar5
           valueFrom:
             configMapKeyRef:
               key: testvar5
-              name: env_file
-        image: 'encrypt:'
+              name: env-file
+        image: 'encrypt:latest'
         imagePullPolicy: ""
         name: encrypt
         resources: {}

@@ -26,11 +26,11 @@ do
         echo "Add a JSON file to encrypt"
         sleep 10
       done
+      echo "found a file to encrypt"
       python /encrypt.py
-
-      echo "encrypt complete - remove the json file\n"
       rm -rf /data/json_file.json
-      echo  "encryption complete"
+      echo "encrypt complete - removed the json file\n"
+
 
       echo "looping encryption"
       sleep 30
