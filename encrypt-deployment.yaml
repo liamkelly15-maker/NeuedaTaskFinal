@@ -45,7 +45,7 @@ spec:
             configMapKeyRef:
               key: testvar5
               name: env-file
-        image: 'encrypt:latest'
+        image: '0872/encrypt:'
         imagePullPolicy: ""
         name: encrypt
         resources: {}

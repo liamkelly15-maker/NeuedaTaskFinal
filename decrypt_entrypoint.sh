@@ -31,9 +31,9 @@ do
       #so there is no json_to_xml.xml in the directory
       cp /outputdata/json_to_xml.xml /outputdata/'json_to_xml'$count'.xml'
       #now remove the original xml file
-      rm -rf /outputdata/json_to_xml.xml
-      rm -rf /outputdata/key.key
-      ((count=count + 1))
+      rm /outputdata/json_to_xml.xml
+      rm /outputdata/key.key
+      ((count++))
       echo "decryption complete"
 
       echo "looping decrypt"

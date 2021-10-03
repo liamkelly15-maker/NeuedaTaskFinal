@@ -20,7 +20,12 @@ version: '3.2'
 #then at CLI type %kompose% convert -f ../docker-compose.yml
 #for some reason decrypt is not working with compose - it runs fine in docker build and docker run
 #i was trying to use the named volume but could not locate the docker volume mount to check the results
-# therefore did not use the volume /outputdata
+# therefore did not use the volume /outputdata-NOT SURE WHAT THIS IS
+#after using kompose convert i am deploying to minikube with
+#kubectl apply -f encrypt-deployment.yaml,decrypt-deployment.yaml,env_file-configmap.yaml,outputdatavolume-persistentvolumeclaim.yaml
+#thereis %kompose% up/down etc  like with docker compose up/down/build but this is not working (its not necessary)
+#latest is that the pods are not coming up due to a scheduler issue ???
+#the goal here is to deploy with the input data in config file and to edit the config with a new file as required
 
 services:
   encrypt:
@@ -28,7 +33,7 @@ services:
       context: .
       dockerfile: Dockerfile.encrypt
     ##dont put a tag and it always builds latest i.e. docker compose build will create a new image with latest tag
-    image: encrypt:${TAG}
+    image: 0872/encrypt:${TAG}
     #try to create an envvironment variable needed by the container (i.e. the running image..maybe add something in the
     #shell script - add using the env-file and  the environment
     #MAKE THE NAME OF THE JSON AN ENV VARIABLE !!
@@ -56,23 +61,26 @@ services:
         #THe key point is that the yaml cannot have variables in it when generated
         # it should be possible to pass in a paramater to Kompose which will generate the yaml
         #paramater such as  kompose .... --set inputdata=C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
-        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
-        #target: /data
+      #  source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\data
+      #  target: /data
       #use a bind volume for outputdata
-      - type: volume
-        source: outputdatavolume
+      #- type: bind
+        #source: outputdatavolume
         # docker will assign d location for mounting volume outside container - i can just specify the mount path inside
-        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
-        target: /outputdata
+      #  source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
+      #  target: /outputdata
+      #this volume mapping is working !!!
       - type: volume
           - ./data:/data
+      - type: volume
+          - ./outputdata:/outputdata
 
   decrypt:
     build:
       context: .
       dockerfile: Dockerfile.decrypt
     #dont put a tag and it builds latest
-    image: decrypt:${TAG}
+    image: 0872/decrypt:${TAG}
      #i think depends_on is no longer valid in Version 3.0 docker compose
      #the depends_on is working good now with 3.2
     depends_on:
@@ -81,9 +89,9 @@ services:
       - env-file
     volumes:
       #use the same bind volume as used by the encrypt service
-      - type: volume
-        source: outputdatavolume
-        #source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
+      - type: bind
+        #source: outputdatavolume
+        source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
         target: /outputdata
 
 #put the named volumes here - this can be shared between containers

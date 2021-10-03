@@ -17,9 +17,11 @@
 #exec > >(tee /opt/copy.log)
 
 #put in a while condition on the existence of a json file
+
+count=1
 while :
 do
-      echo "starting encrypt"
+
       #listen for a json file before starting service
       while ! [ -f /data/json_file.json ]
       do
@@ -28,8 +30,11 @@ do
       done
       echo "found a file to encrypt"
       python /encrypt.py
-      rm -rf /data/json_file.json
+      cp ./data/json_file.json ./data/'oldfile'$count'.json'
+      rm ./data/json_file.json
       echo "encrypt complete - removed the json file\n"
+      ((count++))
+
 
 
       echo "looping encryption"
