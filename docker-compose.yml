@@ -21,6 +21,8 @@ version: '3.2'
 #for some reason decrypt is not working with compose - it runs fine in docker build and docker run
 #i was trying to use the named volume but could not locate the docker volume mount to check the results
 # therefore did not use the volume /outputdata-NOT SURE WHAT THIS IS
+#using local mappimg is fine for testing but a shared volume (managed by docker or K8s) is necessary to deploy the
+#app in any system ... local mappings ( bind volumes) here wont work on a cloud deployment for example-so how to pass in input data ?
 #after using kompose convert i am deploying to minikube with
 #kubectl apply -f encrypt-deployment.yaml,decrypt-deployment.yaml,env_file-configmap.yaml,outputdatavolume-persistentvolumeclaim.yaml
 #thereis %kompose% up/down etc  like with docker compose up/down/build but this is not working (its not necessary)
@@ -33,10 +35,11 @@ services:
       context: .
       dockerfile: Dockerfile.encrypt
     ##dont put a tag and it always builds latest i.e. docker compose build will create a new image with latest tag
+    #i started using a $TAG var to ensure I was building a new image after change to dockerfile
     image: 0872/encrypt:${TAG}
     #try to create an envvironment variable needed by the container (i.e. the running image..maybe add something in the
     #shell script - add using the env-file and  the environment
-    #MAKE THE NAME OF THE JSON AN ENV VARIABLE !!
+    #MAKE THE NAME OF THE JSON AN ENV VARIABLE !!doc
     #not generating a gonfigmap.yaml from this env-file - don't know why
     env_file:
     - env-file
@@ -69,7 +72,9 @@ services:
         # docker will assign d location for mounting volume outside container - i can just specify the mount path inside
       #  source: C:\Users\NeuedaSupport\PycharmProjects\NeuedaTaskfinal\outputdata
       #  target: /outputdata
-      #this volume mapping is working !!!
+      #this volume mapping is working !!! its the same as bind volume - this is fine for testing but for a cloud deployment
+      #this is not going to work for example - TRY TO PASS IN INPUT DATA VIA configmap..this should be possible put jason file into configmap
+      #or add a file in
       - type: volume
           - ./data:/data
       - type: volume

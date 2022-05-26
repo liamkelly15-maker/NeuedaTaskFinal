@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2021-10-31T17:30:27Z"
+  labels:
+    app: nginx-service2
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:internalTrafficPolicy: {}
+        f:ports:
+          .: {}
+          k:{"port":80,"protocol":"TCP"}:
+            .: {}
+            f:name: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl-create
+    operation: Update
+    time: "2021-10-31T17:30:27Z"
+  name: nginx-service2
+  namespace: default
+  resourceVersion: "1716"
+  uid: bb8257af-4958-49f4-b65e-3f9480aaa74b
+spec:
+  clusterIP: 10.106.202.217
+  clusterIPs:
+  - 10.106.202.217
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 80-8
+    port: 80
+    protocol: TCP
+    targetPort: 8
+  selector:
+    app: nginx-service2
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

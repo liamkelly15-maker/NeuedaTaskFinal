@@ -45,8 +45,8 @@ spec:
             configMapKeyRef:
               key: testvar5
               name: env-file
-        image: '0872/encrypt:'
-        imagePullPolicy: ""
+        image: "0872/encrypt:test8"
+        imagePullPolicy: Never
         name: encrypt
         resources: {}
       restartPolicy: Always
